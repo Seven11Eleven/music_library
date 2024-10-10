@@ -88,7 +88,6 @@ func TestGetMusicTextWithPaginationByVerse(t *testing.T) {
 	mockMusicRepo := new(mocks.MusicRepository)
 	mockDataEnrichmentService := new(mocks.DataEnrichmentService)
 
-	// Мокаем получение стихов
 	mockMusicRepo.On("GetMusicTextWithPaginationByVerse", ctx, "1", 10, 0).
 		Return(&models.Music{
 			ID:       "1",
@@ -98,10 +97,9 @@ func TestGetMusicTextWithPaginationByVerse(t *testing.T) {
 			},
 		}, nil)
 
-	// Создаем сервис с моками
+
 	musicService := service.NewMusicService(mockMusicRepo, mockDataEnrichmentService)
 
-	// Валидный запрос для получения стихов
 	music, err := musicService.GetMusicTextWithPaginationByVerse(ctx, "1", 10, 0)
 
 	assert.NoError(t, err)
@@ -109,7 +107,6 @@ func TestGetMusicTextWithPaginationByVerse(t *testing.T) {
 	assert.Len(t, music.Verses, 1)
 	assert.Equal(t, "Eins, zwei, drei", music.Verses[0].Text)
 
-	// Проверяем моки
 	mockMusicRepo.AssertExpectations(t)
 }
 
