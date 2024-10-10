@@ -1,0 +1,202 @@
+definitions:
+  models.Music:
+    properties:
+      group_name:
+        type: string
+      id:
+        type: string
+      link:
+        type: string
+      release_date:
+        type: string
+      song_name:
+        type: string
+      verses:
+        items:
+          $ref: '#/definitions/models.Verse'
+        type: array
+    type: object
+  models.MusicQuery:
+    properties:
+      group_name:
+        type: string
+      song_name:
+        type: string
+    type: object
+  models.Verse:
+    properties:
+      number:
+        type: integer
+      text:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /music:
+    post:
+      consumes:
+      - application/json
+      description: Save a new music record
+      parameters:
+      - description: Music input
+        in: body
+        name: music
+        required: true
+        schema:
+          $ref: '#/definitions/models.MusicQuery'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Music'
+        "400":
+          description: Invalid request body
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Save new music
+      tags:
+      - Music
+  /music/{id}:
+    delete:
+      description: Delete a music record by ID
+      parameters:
+      - description: Music ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Music deleted successfully
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Delete music
+      tags:
+      - Music
+    put:
+      consumes:
+      - application/json
+      description: Update an existing music record
+      parameters:
+      - description: Music ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated music object
+        in: body
+        name: music
+        required: true
+        schema:
+          $ref: '#/definitions/models.Music'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Music'
+        "400":
+          description: Invalid request body
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Update music
+      tags:
+      - Music
+  /music/info:
+    get:
+      description: Retrieve a list of music based on provided filters
+      parameters:
+      - description: Release date in format YYYY-MM-DD
+        in: query
+        name: release_date
+        type: string
+      - description: Music link
+        in: query
+        name: link
+        type: string
+      - description: Name of the song
+        in: query
+        name: song_name
+        type: string
+      - description: Name of the group
+        in: query
+        name: group_name
+        type: string
+      - description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - description: Number of records per page
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Music'
+            type: array
+        "400":
+          description: Invalid date format
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get list of music
+      tags:
+      - Music
+  /music/verses:
+    get:
+      description: Retrieve verses of a music track with pagination
+      parameters:
+      - description: Music ID
+        in: query
+        name: music_id
+        required: true
+        type: string
+      - description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - description: Number of records per page
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Verse'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get verses of music
+      tags:
+      - Music
+swagger: "2.0"
